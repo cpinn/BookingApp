@@ -17,23 +17,25 @@ class PersonsController < ApplicationController
     @person = Person.find(params[:id])
 
     if @person.update(person_params)
-      render component: 'Persons', props: { persons: @persons }
-    else
       render component: 'PersonInfo', props: { persons: @persons }
+    else
+      render component: 'Persons', props: { persons: @persons }
     end
   end
 
   def create
     @person = Person.new(person_params)
     @person.save
-    render component: 'Persons', props: { persons: @persons }
   end
 
   def destroy
     @person = Person.find(params[:id])
-    @person.destroy
-
-    render component: 'Persons', props: { persons: @persons }
+    if @person.destroy
+      @persons = Person.all
+      render component: 'Persons', props: { persons: @persons }
+    else
+      render component: 'Persons', props: { persons: @persons }
+    end
   end
 
   private
