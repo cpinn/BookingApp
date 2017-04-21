@@ -1,28 +1,10 @@
-<<<<<<< HEAD
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+In order to get the app working clone this repository then run the following commands
 
-Things you may want to cover:
+* bundle install
 
-* Ruby version
+* rake db:setup
 
-* System dependencies
+ruby v2.3.4 rails v5.0.2
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-=======
-# BookingApp
->>>>>>> e7991d675709f7247683aa99f0e7d9498ad0088d

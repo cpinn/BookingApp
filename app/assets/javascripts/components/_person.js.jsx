@@ -1,11 +1,61 @@
+var style = {
+    position: "fixed",
+    top: "30%",
+    left: "50%",
+    transform: "translate(-50%, -50%)"
+};
+
 var Persons = React.createClass({
+    getInitialState: function() {
+        return { showResults: false };
+    },
+    onClick: function() {
+        this.setState({ showResults: true });
+    },
     render: function() {
         return (
-            <div>
-                <NewForm />
-                <PersonList data={this.props.data} />
+            <div style={style}>
+                { this.state.showResults ? <NewForm /> : null }
+                { !this.state.showResults ? <PersonList data={this.props.persons} /> : null }
+                { !this.state.showResults ? <button onClick={this.onClick}>Add Person</button>: null }
             </div>
         )
+    }
+});
+
+class PersonList extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            id: ''
+        };
+    }
+
+
+    render() {
+        var persons = this.props.data.map((person, i) => {
+            return (
+                <div className="PersonList" key={i}>
+                    <a href={'/persons/' + person.id}>{person.name}</a>
+                    
+                </div>
+            )
+        });
+        return (<div className="PostList">
+            <h1>List Of Current Users</h1>
+            {persons}
+        </div>)
+    }
+}
+
+var PersonInfo = React.createClass({
+    render: function() {
+        var person = this.props.person;
+        return (<div className="PersonInfo">
+            <h2>{person.name}</h2>
+            <p>{person.email}</p>
+            <p>{person.phone_number}</p>
+        </div>)
     }
 });
 
@@ -35,56 +85,42 @@ class NewForm extends React.Component {
     }
 
     handleSubmit(e) {
-            console.log("email: " + this.state.email);
-            console.log("Name: " + this.state.name);
-            var name = this.state.name;
-            var email = this.state.email;
-            var phone_number = this.state.phone_number;
-            $.ajax({
-                type: 'POST',
-                url: '/persons',
-                data: { person: { name: name, email: email, phone_number: phone_number } },
-            }).success(function(data) {
-                console.log('success');
-            }).fail(function(jqXhr) {
-                console.log('failed to register');
-            });
+
+        var name = this.state.name;
+        var email = this.state.email;
+        var phone_number = this.state.phone_number;
+        $.ajax({
+            type: 'POST',
+            url: '/persons',
+            data: { person: { name: name, email: email, phone_number: phone_number } },
+        }).success(function(data) {
+            console.log('success');
+        }).fail(function() {
+            console.log('failed to register');
+        });
     }
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
+                <h1>Add new person</h1>
                 <label>
                     Name:
                     <input type="text" value={this.state.name} onChange={this.handleNameChange} />
                 </label>
+                <br />
                 <label>
                     Email:
                     <input type="text" value={this.state.email} onChange={this.handleEmailChange} />
                 </label>
+                <br />
                 <label>
-                    Email:
+                    Phone Number:
                     <input type="text" value={this.state.phone_number} onChange={this.handlePhoneNumberChange} />
                 </label>
-                <input type="submit" value="Submit" />
+                <br />
+                <input type="submit" value="Submit" disabled={!this.state.name || !this.state.email || !this.state.phone_number}/>
             </form>
         );
     }
 }
-
-var PersonList = React.createClass({
-    render: function() {
-        var persons = this.props.data.map((person, i) => {
-            return (
-                <div className="post" key={i}>
-                    <h2>{person.name}</h2>
-                    <p>{person.email}</p>
-                    <p>{person.phone_number}</p>
-                </div>
-            )
-        });
-        return (<div className="PostList">
-            {persons}
-        </div>)
-    }
-});
